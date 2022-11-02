@@ -107,13 +107,19 @@ def crossentropy(y_true, y_pred):
 
 def train_step(model, x, y):
     assert len(x) == len(y)
+
+    for param in model.parameters():
+        param.requires_grad_(True)
+
     pred = model(x)
     loss = torch.mean(crossentropy(y, pred))
 
     loss.backward()
     for param in model.parameters():
-        print(param.grad)
-        #param -= LEARNING_RATE * param.grad
+        param.data.add_(-LEARNING_RATE * param.grad.data)
+        param.detach_()
+
+    return loss.item()
 
 
 
@@ -130,6 +136,8 @@ model = Sequential((
 for i in range(1, EPOCHS+1):
     print(f"epoch {i}")
 
-    for b, (x, y) in enumerate(train_dataloader, 1):
-        train_step(model, x, y)
-        break
+    for b, (x, y) in enumerate(train_dataloader):
+        loss = train_step(model, x, y)
+
+        if b % 100 == 0:
+            print(f"> batch {b+1}: loss = {loss:.2f}")
