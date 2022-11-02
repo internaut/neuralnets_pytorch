@@ -10,9 +10,9 @@ IMG_W = 28
 IMG_H = 28
 
 BATCH_SIZE = 64
-DENSE_UNITS = 16
+DENSE_UNITS = 128
 EPOCHS = 10
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.00001
 
 #%%
 
@@ -105,11 +105,17 @@ def crossentropy(y_true, y_pred):
     return -torch.log(p)
 
 
+def accuracy(y_true, y_pred):
+    return torch.mean(torch.tensor(torch.argmax(y_pred) == y_true, dtype=torch.float))
+
+
 def train_step(model, x, y):
     assert len(x) == len(y)
 
     for param in model.parameters():
         param.requires_grad_(True)
+        # if param.grad is not None:   # TODO check this (zero_grad)
+        #      param.grad.data = torch.zeros_like(param.grad.data)
 
     pred = model(x)
     loss = torch.mean(crossentropy(y, pred))
@@ -120,6 +126,16 @@ def train_step(model, x, y):
         param.detach_()
 
     return loss.item()
+
+
+def test_step(model, x, y):
+    assert len(x) == len(y)
+
+    with torch.no_grad():
+        pred = model(x)
+        batch_acc = accuracy(y, pred)
+
+    return batch_acc.item()
 
 
 
@@ -140,4 +156,13 @@ for i in range(1, EPOCHS+1):
         loss = train_step(model, x, y)
 
         if b % 100 == 0:
-            print(f"> batch {b+1}: loss = {loss:.2f}")
+            print(f"> batch {b+1}: loss = {loss:.4f}")
+
+    acc_sum = 0.0
+    n_batches = 0
+    for x, y in test_dataloader:
+        acc_sum += test_step(model, x, y)
+        n_batches += 1
+    mean_acc = acc_sum / n_batches
+
+    print(f"\nmean acc. = {mean_acc:.4f}\n\n")
