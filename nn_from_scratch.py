@@ -10,9 +10,9 @@ IMG_W = 28
 IMG_H = 28
 
 BATCH_SIZE = 64
-DENSE_UNITS = 128
+DENSE_UNITS = 512
 EPOCHS = 20
-LEARNING_RATE = 0.0001
+LEARNING_RATE = 0.001
 
 #%%
 
@@ -48,8 +48,9 @@ class Dense(nn.Module):
         super().__init__()
 
         w_shape = (input_size, units)
-        # weights
-        self.W = torch.rand(w_shape, dtype=torch.float, requires_grad=True) * 0.1
+        # initialize weights with random values
+        # scale by inverse of units -- otherwise output will get too large later on and Softmax will produce inf values
+        self.W = torch.rand(w_shape, dtype=torch.float, requires_grad=True) * (1.0 / units)
         # somehow necessary, see https://discuss.pytorch.org/t/grad-is-none-even-when-requires-grad-true/29826/2
         self.W.retain_grad()
         # bias
