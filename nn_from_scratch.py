@@ -12,7 +12,7 @@ IMG_H = 28
 BATCH_SIZE = 64
 DENSE_UNITS = 128
 EPOCHS = 10
-LEARNING_RATE = 0.00001
+LEARNING_RATE = 0.0001
 
 #%%
 
@@ -106,7 +106,7 @@ def crossentropy(y_true, y_pred):
 
 
 def accuracy(y_true, y_pred):
-    return torch.mean(torch.tensor(torch.argmax(y_pred) == y_true, dtype=torch.float))
+    return torch.mean(torch.tensor(torch.argmax(y_pred, dim=1) == y_true, dtype=torch.float))
 
 
 def train_step(model, x, y):
@@ -114,8 +114,8 @@ def train_step(model, x, y):
 
     for param in model.parameters():
         param.requires_grad_(True)
-        # if param.grad is not None:   # TODO check this (zero_grad)
-        #      param.grad.data = torch.zeros_like(param.grad.data)
+        if param.grad is not None:   # TODO check this (zero_grad)
+             param.grad = None
 
     pred = model(x)
     loss = torch.mean(crossentropy(y, pred))
