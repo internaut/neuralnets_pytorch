@@ -158,7 +158,7 @@ def train_step(model, x, y):
     Training step: For a batch of features `x` and labels `y` do the following:
     (1) perform the forward calculations, i.e. predict the outcomes `pred` given `x`
     (2) calculate the loss between `pred` and known outcomes `y`
-    (3) perform back propagation to obtain the gradients of all parameters w.r.t. the loss
+    (3) perform back propagation to obtain the gradients of the loss w.r.t. to all parameters
     (4) update the parameters by moving them in the opposite direction of the gradients in order to minimize the loss
     """
     assert len(x) == len(y)
