@@ -2,6 +2,9 @@
 Neural network from scratch with PyTorch. Implements a simple two-layer sequential neural network that is trained and
 evaluated on the MNIST dataset.
 
+Roughly follows the TensorFlow example implementation in *Deep Learning with Python* p. 63 by François Chollet, but
+adapts it to PyTorch.
+
 Nov. 2022
 
 author: Markus Konrad <post@mkonrad.net>
