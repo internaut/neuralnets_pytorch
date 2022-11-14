@@ -1,4 +1,4 @@
-# Neural Network from scratch in PyTorch
+# Machine learning examples from scratch with PyTorch
 
 November 2022 / Markus Konrad <post@mkonrad.net>
 
